@@ -1,0 +1,68 @@
+{
+  "corridors": [
+    {
+      "id": "silk_board_orr",
+      "name": "Silk Board – Outer Ring Road",
+      "coordinates": {
+        "start": [77.6229, 12.9172],
+        "end": [77.6963, 12.9350]
+      },
+      "peak_windows": [
+        {"start": "08:30", "end": "10:30", "delay_multiplier": 2.5, "note": "Silk Board junction is the worst bottleneck in Bengaluru — expect 40+ min for a 15 min stretch."},
+        {"start": "17:30", "end": "20:00", "delay_multiplier": 2.2, "note": "Evening outflow from Electronic City/Koramangala compounds here."}
+      ],
+      "alternate_routes": [
+        "HSR Layout inner roads bypass during peak, adds 2km but avoids junction stall.",
+        "Elevated corridor (if available) skips signal entirely."
+      ]
+    },
+    {
+      "id": "whitefield_stretch",
+      "name": "Whitefield – Marathahalli Bridge",
+      "coordinates": {
+        "start": [77.6974, 12.9569],
+        "end": [77.7499, 12.9698]
+      },
+      "peak_windows": [
+        {"start": "09:00", "end": "10:30", "delay_multiplier": 1.8, "note": "IT corridor inflow, Marathahalli bridge signal is the chokepoint."},
+        {"start": "18:00", "end": "20:30", "delay_multiplier": 2.0, "note": "Outflow from ITPL/tech parks stacks traffic back toward Kundalahalli."}
+      ],
+      "alternate_routes": [
+        "Old Airport Road via HAL adds distance but avoids bridge congestion.",
+        "ORR service road bypass for short stretches."
+      ]
+    },
+    {
+      "id": "hebbal",
+      "name": "Hebbal Flyover Corridor",
+      "coordinates": {
+        "start": [77.5908, 13.0355],
+        "end": [77.6412, 13.0430]
+      },
+      "peak_windows": [
+        {"start": "08:00", "end": "10:00", "delay_multiplier": 2.0, "note": "Airport-bound traffic + North Bengaluru IT inflow converge at the flyover."},
+        {"start": "18:30", "end": "20:30", "delay_multiplier": 1.9, "note": "Reverse flow, compounded by signal timing at the underpass."}
+      ],
+      "alternate_routes": [
+        "Bellary Road service lane during flyover congestion.",
+        "Outer Ring Road diversion via Nagawara for longer trips."
+      ]
+    },
+    {
+      "id": "electronic_city",
+      "name": "Electronic City – Hosur Road",
+      "coordinates": {
+        "start": [77.6648, 12.8399],
+        "end": [77.6309, 12.9081]
+      },
+      "peak_windows": [
+        {"start": "08:30", "end": "10:00", "delay_multiplier": 2.3, "note": "Single-corridor bottleneck — Hosur Road has no real bypass, expect heavy stacking."},
+        {"start": "18:00", "end": "20:00", "delay_multiplier": 2.4, "note": "Worst evening corridor in the city per commuter reports — NICE Road tollway is the only real alternate."}
+      ],
+      "alternate_routes": [
+        "NICE Road (tollway) — faster but has toll cost, worth it during peak.",
+        "Konanakunte Cross route for local-only trips, not through-traffic."
+      ]
+    }
+  ]
+}
