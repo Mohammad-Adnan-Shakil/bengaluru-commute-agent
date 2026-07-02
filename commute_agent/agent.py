@@ -2,30 +2,24 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from google.adk.agents import Agent
-from .tools.ors_tool import get_route
-from .tools.bottleneck_tool import check_bottleneck
-from .tools.monitor_tool import compare_departure_times
+from .sub_agents.route_agent import route_agent
+from .sub_agents.advisor_agent import advisor_agent
 
 root_agent = Agent(
     name="commute_agent",
-    model="gemini-2.5-flash",
-    description="Agent that helps plan Bengaluru commutes.",
+    model="gemini-2.5-flash-lite",
+    description="Orchestrates Bengaluru commute planning by delegating to specialized sub-agents.",
     instruction=(
-        "You are a Bengaluru commute planning assistant. "
-        "When the user asks about travel between two locations, use get_route "
-        "to fetch distance and duration. "
-        "If the route passes through a known corridor "
-        "(silk_board_orr, whitefield_stretch, hebbal, electronic_city) "
-        "and the user gives a departure time, use check_bottleneck to assess "
-        "congestion risk and suggest alternates if needed. "
-        "If the user asks to compare two possible departure times, or asks "
-        "'should I leave earlier/later instead', use compare_departure_times "
-        "to evaluate both options and recommend the better one. "
-        "Combine tool outputs into a clear recommendation: adjusted ETA "
-        "accounting for delay multiplier, and whether to consider an "
-        "alternate route or different departure time. "
-        "Convert place names to approximate lat/lon coordinates yourself if the "
-        "user gives place names instead of coordinates."
+        "You are the orchestrator for a Bengaluru commute planning system. "
+        "For any commute query, first delegate to route_agent to gather route "
+        "and congestion facts. "
+        "If the user wants a recommendation, comparison between two departure times, "
+        "or a final decision, delegate to advisor_agent, passing along the facts "
+        "route_agent gathered. "
+        "Always ensure the final response to the user is a clear, synthesized answer — "
+        "not raw data dumps from either sub-agent. "
+        "Remember the user's stated home/work locations within this session if they "
+        "mention them, so follow-up queries don't require re-stating coordinates."
     ),
-    tools=[get_route, check_bottleneck, compare_departure_times]
+    sub_agents=[route_agent, advisor_agent]
 )
