@@ -1,0 +1,42 @@
+Demo Script — Word-for-Word, Ready to Rehearse
+Opening (10 sec)
+
+"This is a Bengaluru Commute Agent, built on Gemini and ADK. It's not a chatbot with a routing API bolted on — it's two specialized agents working together. One gathers facts, one makes decisions. I'll show you three things: how it reasons about congestion, how it compares scenarios, and how it handles questions outside its own knowledge without making things up."
+
+
+Query 1 — Baseline Reasoning (30 sec)
+Type: "What's the traffic like from Silk Board to ORR at 8:45 AM?"
+While it loads:
+
+"This routes through our RouteAgent — it's pulling live route data from OpenRouteService, then checking that specific corridor against curated congestion knowledge."
+
+When response appears:
+
+"You can see the tools that fired — Fetch route, Check congestion. It's not guessing this is HIGH congestion, it's giving a 2.5x delay multiplier and specific alternate routes. And on the map, the red segment is the actual flagged bottleneck zone — not the whole route colored red, just where the problem is."
+
+
+Query 2 — Multi-Agent Decision Making (35 sec)
+Type: "Should I leave Electronic City for Whitefield at 7:30 AM or 9:15 AM?"
+While it loads:
+
+"Different question type, different agent. This delegates to our AdvisorAgent — its only job is decision-making, not data-gathering."
+
+When response appears:
+
+"Notice it doesn't just show two numbers side by side — it commits to a verdict. '07:30 AM is significantly better.' That's the orchestrator routing to a different sub-agent because this question needed comparison and judgment, not just a lookup."
+
+
+Query 3 — Graceful Fallback (25 sec)
+Type: "What's the route from Jayanagar to Koramangala at 9 AM?"
+Before it loads:
+
+"This route isn't in our 4 known corridors. Watch what happens."
+
+When response appears:
+
+"It still gives route data — distance and time — but explicitly says it can't assess congestion for this specific route. This matters because it means the agent doesn't hallucinate a fake bottleneck to seem confident. It knows the limits of its own knowledge, and it says so."
+
+
+Closing (15 sec)
+
+"The architecture here — one agent gathering data, another deciding — is domain-agnostic. Same pattern works for hospital triage, disaster response, any decision that needs live data plus reasoned judgment. We built it on Bengaluru traffic because it's data we could ground in something real — not because the pattern is traffic-specific."

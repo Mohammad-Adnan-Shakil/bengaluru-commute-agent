@@ -68,11 +68,9 @@ function FitBoundsToRoute({ coordinates }) {
   useEffect(() => {
     if (!coordinates || coordinates.length === 0) return;
 
-    const bounds = coordinates.map(([lng, lat]) => [lat, lng]);
-
     requestAnimationFrame(() => {
       map.invalidateSize();
-      map.fitBounds(bounds, { padding: [40, 40] });
+      map.fitBounds(coordinates, { padding: [40, 40] });
     });
   }, [coordinates, map]);
 
