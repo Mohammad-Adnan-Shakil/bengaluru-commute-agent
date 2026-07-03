@@ -63,14 +63,14 @@ function getSegmentColor(segmentIndex, congestionLevel, bottleneckIndices) {
   return "#22c55e";
 }
 
-function MapBounds({ coords }) {
+function FitBoundsToRoute({ coords }) {
   const map = useMap();
   useEffect(() => {
     if (coords.length > 0) {
       const bounds = L.latLngBounds(coords.map((c) => [c[1], c[0]]));
       map.fitBounds(bounds, { padding: [40, 40] });
     }
-  }, [map, coords]);
+  }, [coords, map]);
   return null;
 }
 
@@ -131,8 +131,8 @@ export default function RouteMap({ corridor, congestion, routeGeometry, bottlene
   return (
     <div className="mt-3 rounded-xl overflow-hidden border border-neutral-800/40">
       <MapContainer
-        center={route.coords[midIdx]}
-        zoom={13}
+        center={[12.93, 77.65]}
+        zoom={12}
         zoomSnap={0.5}
         zoomDelta={0.5}
         scrollWheelZoom={true}
@@ -146,7 +146,7 @@ export default function RouteMap({ corridor, congestion, routeGeometry, bottlene
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
 
-        <MapBounds coords={route.coords} />
+        <FitBoundsToRoute coords={route.coords} />
         <ScrollActivator />
 
         {segments.map((seg, i) => (
