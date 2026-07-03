@@ -27,7 +27,7 @@ export default function MessageBubble({ message, index }) {
   const isUser = message.role === "user";
   const isError = message.text?.startsWith("Error:") || message.text?.startsWith("Agent temporarily unavailable");
 
-  const hasRouteData = message.routeGeometry?.coordinates?.length > 0;
+  const hasRouteData = message.routeCoordinates?.length > 1;
   const congestion = hasRouteData ? (message.congestionLevel || extractCongestion(message.text || "")) : (!isUser ? extractCongestion(message.text || "") : null);
   const corridor = hasRouteData ? "silk_board_orr" : (!isUser ? extractCorridor(message.text || "") : null);
 
@@ -78,7 +78,7 @@ export default function MessageBubble({ message, index }) {
               <RouteMap
                 corridor={corridor}
                 congestion={congestion}
-                routeGeometry={message.routeGeometry}
+                routeCoordinates={message.routeCoordinates}
                 bottleneckIndices={message.bottleneckIndices}
               />
             )}

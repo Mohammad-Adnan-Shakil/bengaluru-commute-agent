@@ -1,5 +1,6 @@
 import os
 import requests
+import polyline
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,7 +19,8 @@ def get_route(origin_lon: float, origin_lat: float, dest_lon: float, dest_lat: f
         dest_lat: Destination latitude
 
     Returns:
-        A dict with distance (meters), duration (seconds), and route summary.
+        A dict with distance (km), duration (min), route summary,
+        and decoded road-following geometry as [lat, lon] pairs.
     """
     headers = {
         "Authorization": ORS_API_KEY,
@@ -34,10 +36,15 @@ def get_route(origin_lon: float, origin_lat: float, dest_lon: float, dest_lat: f
         return {"error": f"ORS request failed: {response.status_code} - {response.text}"}
 
     data = response.json()
-    summary = data["routes"][0]["summary"]
+    route = data["routes"][0]
+    summary = route["summary"]
+    encoded_geometry = route["geometry"]
+
+    decoded_coords = polyline.decode(encoded_geometry)
 
     return {
         "distance_km": round(summary["distance"] / 1000, 2),
         "duration_min": round(summary["duration"] / 60, 1),
-        "raw_summary": summary
+        "raw_summary": summary,
+        "route_coordinates": decoded_coords
     }

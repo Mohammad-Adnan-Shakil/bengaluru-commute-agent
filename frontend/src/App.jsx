@@ -31,7 +31,7 @@ export default function App() {
           role: "agent",
           text: data.response,
           tools: data.tool_trace,
-          routeGeometry: data.route_geometry || null,
+          routeCoordinates: data.route_coordinates || null,
           congestionLevel: data.congestion_level || null,
           bottleneckIndices: data.bottleneck_segment_indices || null,
         },

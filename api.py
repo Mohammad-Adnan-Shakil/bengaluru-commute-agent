@@ -16,9 +16,7 @@ MOCK_RESPONSES = {
         "response": "Traffic from Silk Board to Outer Ring Road at 8:45 AM is experiencing HIGH congestion. Delay multiplier of 2.5x — a 15-minute stretch could take 40+ minutes. Consider HSR Layout inner roads or the elevated corridor.",
         "tool_trace": ["get_route", "check_bottleneck"],
         "session_id": "mock-session-123",
-        "route_geometry": {
-            "coordinates": [[77.6229, 12.9172], [77.6332, 12.9215], [77.6412, 12.9245], [77.6558, 12.9278], [77.6701, 12.9310], [77.6835, 12.9335], [77.6963, 12.9350]]
-        },
+        "route_coordinates": [[12.9172, 77.6229], [12.9215, 77.6332], [12.9245, 77.6412], [12.9278, 77.6558], [12.9310, 77.6701], [12.9335, 77.6835], [12.9350, 77.6963]],
         "bottleneck_segment_indices": [2, 3, 4],
         "congestion_level": "HIGH"
     }
@@ -63,6 +61,22 @@ async def run_with_retry(user_id: str, session_id: str, message_content: Content
             raise
 
 
+def extract_route_geometry(events):
+    """Scans agent events for get_route's tool response, pulls real geometry."""
+    for event in events:
+        try:
+            function_responses = event.get_function_responses()
+        except AttributeError:
+            continue
+        if function_responses:
+            for fr in function_responses:
+                if fr.name == "get_route":
+                    result = fr.response
+                    if isinstance(result, dict) and "route_coordinates" in result:
+                        return result["route_coordinates"]
+    return None
+
+
 @app.post("/chat")
 async def chat(query: Query):
     if MOCK_MODE:
@@ -93,9 +107,11 @@ async def chat(query: Query):
         for e in events
         for fc in (e.get_function_calls() or [])
     ]
+    route_coords = extract_route_geometry(events)
 
     return {
         "response": final_response.content.parts[0].text if final_response else "No response",
         "tool_trace": tool_calls,
-        "session_id": session_id
+        "session_id": session_id,
+        "route_coordinates": route_coords
     }

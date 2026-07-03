@@ -103,18 +103,18 @@ function ScrollActivator() {
   return null;
 }
 
-export default function RouteMap({ corridor, congestion, routeGeometry, bottleneckIndices }) {
+export default function RouteMap({ corridor, congestion, routeCoordinates, bottleneckIndices }) {
   const mapRef = useRef(null);
   const congestionLevel = congestion?.toUpperCase() || "HIGH";
   const indices = bottleneckIndices || [];
 
-  const useDynamicRoute = routeGeometry?.coordinates?.length > 1;
-  const route = useDynamicRoute
+  const hasRealCoords = routeCoordinates?.length > 1;
+  const route = hasRealCoords
     ? {
         name: corridor ? CORRIDOR_ROUTES[corridor]?.name || "Route" : "Route",
-        coords: routeGeometry.coordinates.map((c) => [c[1], c[0]]),
-        origin: [routeGeometry.coordinates[0][1], routeGeometry.coordinates[0][0]],
-        dest: [routeGeometry.coordinates[routeGeometry.coordinates.length - 1][1], routeGeometry.coordinates[routeGeometry.coordinates.length - 1][0]],
+        coords: routeCoordinates,
+        origin: routeCoordinates[0],
+        dest: routeCoordinates[routeCoordinates.length - 1],
       }
     : CORRIDOR_ROUTES[corridor];
 
