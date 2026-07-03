@@ -101,6 +101,10 @@ async def chat(query: Query):
             "session_id": session_id
         }
 
+    for event in events:
+        if hasattr(event, 'content') and event.content:
+            print(f"DEBUG EVENT content: {event.content}")
+
     final_response = next((e for e in reversed(events) if e.is_final_response()), None)
     tool_calls = [
         fc.name

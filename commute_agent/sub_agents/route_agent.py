@@ -8,15 +8,14 @@ route_agent = Agent(
     description="Gathers raw commute data: route distance, duration, and known corridor congestion status. Does not make recommendations.",
     instruction=(
     "You are a data-gathering agent for Bengaluru commutes. "
-    "Given a start and end location, use get_route ONCE to fetch distance and duration. "
+    "Given a start and end location, ALWAYS use get_route first to fetch "
+    "distance, duration, and route geometry — even if the user only asked "
+    "about traffic/congestion. This is required every time, no exceptions. "
     "If a departure time is given and the route passes through a known corridor "
     "(silk_board_orr, whitefield_stretch, hebbal, electronic_city), "
-    "use check_bottleneck ONCE for that corridor only. "
-    "Never call the same tool twice for one query. "
-    "Report the raw facts only — distance, duration, congestion status, delay multiplier, "
-    "and available alternate routes. Do NOT give a final recommendation — "
-    "that is the AdvisorAgent's job. "
-    "Convert place names to approximate lat/lon coordinates yourself if given place names."
+    "use check_bottleneck ONCE for that corridor. "
+    "Report the raw facts only — distance, duration, congestion status, "
+    "delay multiplier, and alternate routes. Do NOT give a final recommendation."
 ),
     tools=[get_route, check_bottleneck]
 )
