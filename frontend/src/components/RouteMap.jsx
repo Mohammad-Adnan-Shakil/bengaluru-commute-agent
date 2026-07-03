@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Polyline, Circle, Tooltip, useMap } from "react-leaflet";
-import L from "leaflet";
 
 const CORRIDOR_ROUTES = {
   silk_board_orr: {
@@ -63,14 +62,20 @@ function getSegmentColor(segmentIndex, congestionLevel, bottleneckIndices) {
   return "#22c55e";
 }
 
-function FitBoundsToRoute({ coords }) {
+function FitBoundsToRoute({ coordinates }) {
   const map = useMap();
+
   useEffect(() => {
-    if (coords.length > 0) {
-      const bounds = L.latLngBounds(coords.map((c) => [c[1], c[0]]));
+    if (!coordinates || coordinates.length === 0) return;
+
+    const bounds = coordinates.map(([lng, lat]) => [lat, lng]);
+
+    requestAnimationFrame(() => {
+      map.invalidateSize();
       map.fitBounds(bounds, { padding: [40, 40] });
-    }
-  }, [coords, map]);
+    });
+  }, [coordinates, map]);
+
   return null;
 }
 
@@ -131,8 +136,8 @@ export default function RouteMap({ corridor, congestion, routeGeometry, bottlene
   return (
     <div className="mt-3 rounded-xl overflow-hidden border border-neutral-800/40">
       <MapContainer
-        center={[12.93, 77.65]}
-        zoom={12}
+        center={[12.9716, 77.5946]}
+        zoom={11}
         zoomSnap={0.5}
         zoomDelta={0.5}
         scrollWheelZoom={true}
@@ -146,7 +151,7 @@ export default function RouteMap({ corridor, congestion, routeGeometry, bottlene
           url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
 
-        <FitBoundsToRoute coords={route.coords} />
+        <FitBoundsToRoute coordinates={route.coords} />
         <ScrollActivator />
 
         {segments.map((seg, i) => (
