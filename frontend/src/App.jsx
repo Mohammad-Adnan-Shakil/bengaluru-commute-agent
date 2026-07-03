@@ -4,6 +4,8 @@ import EmptyState from "./components/EmptyState";
 import MessageList from "./components/MessageList";
 import ChatInput from "./components/ChatInput";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8001";
+
 export default function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -18,7 +20,7 @@ export default function App() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8001/chat", {
+      const res = await fetch(`${API_URL}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: msg, session_id: sessionId }),
