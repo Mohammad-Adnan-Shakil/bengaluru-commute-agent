@@ -3,7 +3,8 @@ import requests
 import polyline
 from dotenv import load_dotenv
 
-load_dotenv()
+_env_path = os.path.join(os.path.dirname(__file__), "..", ".env")
+load_dotenv(_env_path)
 
 ORS_API_KEY = os.getenv("ORS_API_KEY")
 ORS_BASE_URL = "https://api.openrouteservice.org/v2/directions/driving-car"
