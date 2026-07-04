@@ -73,6 +73,7 @@ def extract_route_geometry(events):
             continue
         if function_responses:
             for fr in function_responses:
+                print(f"DEBUG: tool={fr.name}, response keys={fr.response.keys() if isinstance(fr.response, dict) else 'not a dict'}")
                 if fr.name == "get_route":
                     result = fr.response
                     if isinstance(result, dict) and "route_coordinates" in result:
