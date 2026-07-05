@@ -54,8 +54,28 @@
   }
 }
 
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes check-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .animate-fade-slide-up {
-  animation: fade-slide-up 200ms ease-out both;
+  animation: fade-slide-up 300ms ease-out both;
 }
 
 .animate-shimmer {
@@ -78,7 +98,33 @@
   animation: glow-pulse 2s ease-in-out infinite;
 }
 
+.animate-spin-slow {
+  animation: spin-slow 2s linear infinite;
+}
+
+.animate-check-in {
+  animation: check-in 300ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-slide-up,
+  .animate-shimmer,
+  .animate-pulse-dot,
+  .animate-draw-line,
+  .animate-glow-pulse,
+  .animate-spin-slow,
+  .animate-check-in {
+    animation: none !important;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 [type="text"]:focus,
+[type="textarea"]:focus,
 button:focus-visible {
   outline: 2px solid #f59e0b;
   outline-offset: 2px;
@@ -99,4 +145,25 @@ button:focus-visible {
   background: linear-gradient(to bottom, rgba(10, 10, 10, 1), transparent);
   pointer-events: none;
   z-index: 10;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(64, 64, 64, 0.5);
+  border-radius: 9999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(82, 82, 82, 0.7);
+}
+
+textarea::placeholder {
+  color: #525252;
 }

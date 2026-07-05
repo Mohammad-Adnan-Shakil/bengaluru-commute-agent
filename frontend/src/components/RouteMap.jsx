@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Polyline, Circle, Tooltip, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Polyline, Circle, useMap } from "react-leaflet";
 
 const CORRIDOR_ROUTES = {
   silk_board_orr: {
@@ -132,7 +132,26 @@ export default function RouteMap({ corridor, congestion, routeCoordinates, bottl
   const midIdx = Math.floor(route.coords.length / 2);
 
   return (
-    <div className="mt-3 rounded-xl overflow-hidden border border-neutral-800/40">
+    <div className="relative rounded-xl overflow-hidden border border-neutral-800/40">
+      <div className="absolute top-2 left-2 z-[1000] flex flex-wrap gap-1.5">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/20 backdrop-blur-md border border-amber-500/30 text-[10px] text-amber-300 font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+          Origin
+        </span>
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-500/20 backdrop-blur-md border border-cyan-500/30 text-[10px] text-cyan-300 font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-cyan-500" />
+          Destination
+        </span>
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-500/20 backdrop-blur-md border border-green-500/30 text-[10px] text-green-300 font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+          Clear
+        </span>
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 backdrop-blur-md border border-red-500/30 text-[10px] text-red-300 font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+          Bottleneck
+        </span>
+      </div>
+
       <MapContainer
         center={[12.9716, 77.5946]}
         zoom={11}
@@ -141,8 +160,10 @@ export default function RouteMap({ corridor, congestion, routeCoordinates, bottl
         scrollWheelZoom={true}
         dragging={true}
         zoomControl={false}
-        className="w-full h-48 sm:h-64 z-0"
+        className="w-full h-64 sm:h-80 z-0"
         ref={mapRef}
+        role="application"
+        aria-label="Interactive route map"
       >
         <TileLayer
           attribution='&copy; <a href="https://carto.com/">CARTO</a>'
@@ -160,7 +181,6 @@ export default function RouteMap({ corridor, congestion, routeCoordinates, bottl
               color: seg.color,
               weight: 5,
               opacity: 0.9,
-              className: "animate-draw-line",
             }}
           />
         ))}
@@ -174,11 +194,7 @@ export default function RouteMap({ corridor, congestion, routeCoordinates, bottl
             weight: 2,
             radius: 80,
           }}
-        >
-          <Tooltip permanent direction="right" offset={[8, 0]} className="bg-neutral-900 text-neutral-200 border-neutral-700 text-xs font-medium">
-            Origin
-          </Tooltip>
-        </Circle>
+        />
 
         <Circle
           center={route.dest}
@@ -189,11 +205,7 @@ export default function RouteMap({ corridor, congestion, routeCoordinates, bottl
             weight: 2,
             radius: 100,
           }}
-        >
-          <Tooltip permanent direction="right" offset={[8, 0]} className="bg-neutral-900 text-neutral-200 border-neutral-700 text-xs font-medium">
-            Destination
-          </Tooltip>
-        </Circle>
+        />
 
         {indices.length > 0 && (
           <Circle
@@ -209,26 +221,9 @@ export default function RouteMap({ corridor, congestion, routeCoordinates, bottl
           />
         )}
       </MapContainer>
+
       <div className="px-3 py-1.5 bg-neutral-900/80 border-t border-neutral-800/30 flex items-center justify-between text-[10px]">
         <span className="text-neutral-500 font-medium">{route.name}</span>
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1 text-neutral-500">
-            <span className="w-2 h-0.5 rounded bg-amber-500" />
-            Origin
-          </span>
-          <span className="flex items-center gap-1 text-neutral-500">
-            <span className="w-2 h-0.5 rounded bg-cyan-500" />
-            Dest
-          </span>
-          <span className="flex items-center gap-1 text-neutral-500">
-            <span className="w-2 h-0.5 rounded bg-green-500" />
-            Clear
-          </span>
-          <span className="flex items-center gap-1 text-neutral-500">
-            <span className="w-2 h-0.5 rounded bg-red-500" />
-            Bottleneck
-          </span>
-        </div>
       </div>
     </div>
   );

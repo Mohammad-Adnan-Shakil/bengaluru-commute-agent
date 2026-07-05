@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Header from "./components/Header";
 import EmptyState from "./components/EmptyState";
 import MessageList from "./components/MessageList";
@@ -11,6 +11,11 @@ export default function App() {
   const [input, setInput] = useState("");
   const [sessionId, setSessionId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const sendMessage = useCallback(async (text) => {
     const msg = text || input;
@@ -66,7 +71,9 @@ export default function App() {
       <Header />
       <div className="flex flex-col flex-1 min-h-0">
         {messages.length === 0 ? (
-          <EmptyState onSend={handleExampleClick} />
+          <div className={`transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+            <EmptyState onSend={handleExampleClick} />
+          </div>
         ) : (
           <MessageList messages={messages} loading={loading} />
         )}
