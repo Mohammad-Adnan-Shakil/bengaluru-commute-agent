@@ -69,7 +69,7 @@ export default function App() {
       </div>
 
       <Header />
-      <div className="flex flex-col flex-1 min-h-0">
+      <div className="flex flex-col flex-1 min-h-0 overflow-y-auto">
         {messages.length === 0 ? (
           <div className={`transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
             <EmptyState onSend={handleExampleClick} />
