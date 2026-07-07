@@ -11,13 +11,26 @@ import uuid
 
 MOCK_MODE = os.getenv("MOCK_MODE", "false").lower() == "true"
 
+def _compute_bottleneck_indices(route_coords, congestion_level):
+    """Compute proportional bottleneck segment indices based on route length."""
+    if not route_coords or len(route_coords) < 4:
+        return []
+    if congestion_level not in ("HIGH", "MEDIUM"):
+        return []
+    num_segments = len(route_coords) - 1
+    seg_start = int(num_segments * 0.3)
+    seg_end = int(num_segments * 0.7)
+    return list(range(seg_start, seg_end + 1))
+
+
+MOCK_ROUTE_COORDS = [[12.9172, 77.6229], [12.9215, 77.6332], [12.9245, 77.6412], [12.9278, 77.6558], [12.9310, 77.6701], [12.9335, 77.6835], [12.9350, 77.6963]]
 MOCK_RESPONSES = {
     "default": {
         "response": "Traffic from Silk Board to Outer Ring Road at 8:45 AM is experiencing HIGH congestion. Delay multiplier of 2.5x — a 15-minute stretch could take 40+ minutes. Consider HSR Layout inner roads or the elevated corridor.",
         "tool_trace": ["get_route", "check_bottleneck"],
         "session_id": "mock-session-123",
-        "route_coordinates": [[12.9172, 77.6229], [12.9215, 77.6332], [12.9245, 77.6412], [12.9278, 77.6558], [12.9310, 77.6701], [12.9335, 77.6835], [12.9350, 77.6963]],
-        "bottleneck_segment_indices": [2, 3, 4],
+        "route_coordinates": MOCK_ROUTE_COORDS,
+        "bottleneck_segment_indices": _compute_bottleneck_indices(MOCK_ROUTE_COORDS, "HIGH"),
         "congestion_level": "HIGH"
     }
 }
@@ -81,6 +94,22 @@ def extract_route_geometry(events):
     return None
 
 
+def extract_congestion_level(events):
+    """Scans agent events for check_bottleneck's response, returns congestion level."""
+    for event in events:
+        try:
+            function_responses = event.get_function_responses()
+        except AttributeError:
+            continue
+        if function_responses:
+            for fr in function_responses:
+                if fr.name == "check_bottleneck":
+                    result = fr.response
+                    if isinstance(result, dict):
+                        return result.get("congestion")
+    return None
+
+
 @app.post("/chat")
 async def chat(query: Query):
     if MOCK_MODE:
@@ -116,10 +145,14 @@ async def chat(query: Query):
         for fc in (e.get_function_calls() or [])
     ]
     route_coords = extract_route_geometry(events)
+    congestion_level = extract_congestion_level(events)
+    bottleneck_indices = _compute_bottleneck_indices(route_coords, congestion_level)
 
     return {
         "response": final_response.content.parts[0].text if final_response else "No response",
         "tool_trace": tool_calls,
         "session_id": session_id,
-        "route_coordinates": route_coords
+        "route_coordinates": route_coords,
+        "congestion_level": congestion_level,
+        "bottleneck_segment_indices": bottleneck_indices
     }
