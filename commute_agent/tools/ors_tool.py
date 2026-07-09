@@ -7,7 +7,7 @@ _env_path = os.path.join(os.path.dirname(__file__), "..", ".env")
 load_dotenv(_env_path)
 
 ORS_API_KEY = os.getenv("ORS_API_KEY")
-ORS_BASE_URL = "https://api.openrouteservice.org/v2/directions/driving-car"
+ORS_BASE_URL = "https://api.heigit.org/v2/directions/driving-car"
 
 def get_route(origin_lon: float, origin_lat: float, dest_lon: float, dest_lat: float) -> dict:
     """
