@@ -96,17 +96,24 @@ def extract_route_geometry(events):
 
 def extract_congestion_level(events):
     """Scans agent events for check_bottleneck's response, returns congestion level."""
-    for event in events:
+    for i, event in enumerate(events):
         try:
             function_responses = event.get_function_responses()
         except AttributeError:
             continue
         if function_responses:
-            for fr in function_responses:
+            for j, fr in enumerate(function_responses):
+                print(f"DEBUG extract_congestion_level: event[{i}] func_resp[{j}] name={fr.name}, response_type={type(fr.response).__name__}")
+                if isinstance(fr.response, dict):
+                    print(f"DEBUG extract_congestion_level:   keys={list(fr.response.keys())}")
                 if fr.name == "check_bottleneck":
                     result = fr.response
+                    print(f"DEBUG extract_congestion_level: FOUND check_bottleneck, result={result!r}")
                     if isinstance(result, dict):
-                        return result.get("congestion")
+                        val = result.get("congestion")
+                        print(f"DEBUG extract_congestion_level: returning congestion={val!r}")
+                        return val
+    print("DEBUG extract_congestion_level: NO check_bottleneck response found")
     return None
 
 
@@ -163,6 +170,8 @@ async def chat(query: Query):
     route_coords = extract_route_geometry(events)
     congestion_level = extract_congestion_level(events)
     bottleneck_indices = _compute_bottleneck_indices(route_coords, congestion_level)
+
+    print(f"DEBUG RESPONSE: congestion_level={congestion_level!r}, route_coords_count={len(route_coords) if route_coords else 0}, bottleneck_indices={bottleneck_indices}")
 
     return {
         "response": extract_response_text(final_response),
