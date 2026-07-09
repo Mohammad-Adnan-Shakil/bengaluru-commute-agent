@@ -169,6 +169,16 @@ async def chat(query: Query):
     ]
     route_coords = extract_route_geometry(events)
     congestion_level = extract_congestion_level(events)
+
+    # Fallback: parse congestion from text response if tool response wasn't found
+    if congestion_level is None:
+        resp_text = extract_response_text(final_response)
+        upper = resp_text.upper()
+        if "HIGH" in upper:
+            congestion_level = "HIGH"
+        elif "MEDIUM" in upper or "MODERATE" in upper:
+            congestion_level = "MEDIUM"
+
     bottleneck_indices = _compute_bottleneck_indices(route_coords, congestion_level)
 
     print(f"DEBUG RESPONSE: congestion_level={congestion_level!r}, route_coords_count={len(route_coords) if route_coords else 0}, bottleneck_indices={bottleneck_indices}")

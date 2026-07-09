@@ -105,7 +105,7 @@ function ScrollActivator() {
 
 export default function RouteMap({ corridor, congestion, routeCoordinates, bottleneckIndices }) {
   const mapRef = useRef(null);
-  const congestionLevel = congestion?.toUpperCase() || "HIGH";
+  const congestionLevel = congestion?.toUpperCase();
   const indices = bottleneckIndices || [];
 
   const hasRealCoords = routeCoordinates?.length > 1;

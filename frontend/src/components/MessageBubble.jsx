@@ -4,9 +4,9 @@ import RouteMap from "./RouteMap";
 
 function extractCongestion(text) {
   const upper = text.toUpperCase();
-  if (upper.includes("HIGH")) return "high";
-  if (upper.includes("MEDIUM") || upper.includes("MODERATE")) return "medium";
-  if (upper.includes("LOW")) return "low";
+  if (upper.includes("HIGH")) return "HIGH";
+  if (upper.includes("MEDIUM") || upper.includes("MODERATE")) return "MEDIUM";
+  if (upper.includes("LOW")) return "LOW";
   return null;
 }
 
@@ -61,9 +61,9 @@ export default function MessageBubble({ message, index }) {
   const stats = !isUser && hasRouteData ? extractRouteStats(message.text || "") : null;
 
   const congestionBorder = {
-    high: "border-l-red-500/50",
-    medium: "border-l-amber-500/50",
-    low: "border-l-green-500/50",
+    HIGH: "border-l-red-500/50",
+    MEDIUM: "border-l-amber-500/50",
+    LOW: "border-l-green-500/50",
   }[congestion] || "border-l-amber-500/30";
 
   return (
@@ -94,13 +94,13 @@ export default function MessageBubble({ message, index }) {
                 </span>
                 {congestion && (
                   <span className={`ml-auto text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                    congestion === "high"
+                    congestion === "HIGH"
                       ? "bg-red-500/10 text-red-400 border border-red-500/20"
-                      : congestion === "medium"
+                      : congestion === "MEDIUM"
                       ? "bg-amber-500/10 text-amber-400 border border-amber-500/20"
                       : "bg-green-500/10 text-green-400 border border-green-500/20"
                   }`}>
-                    {congestion} congestion
+                    {congestion.toLowerCase()} congestion
                   </span>
                 )}
               </div>
