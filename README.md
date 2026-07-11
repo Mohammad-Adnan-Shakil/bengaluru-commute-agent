@@ -6,6 +6,7 @@ it reasons about known Bengaluru traffic bottlenecks and helps you decide when a
 Built for the Google AI Agent Builder Series 2026 (Open Innovation track).
 
 **Live demo:** https://bengaluru-commute-agent.vercel.app
+**Video demo:** [link]
 
 ## Why This Exists
 
@@ -13,7 +14,8 @@ Bengaluru has some of the worst urban traffic in the world. Generic routing tool
 distance and time, but they don't account for corridor-specific congestion patterns commuters
 already know from experience. This agent reasons over curated knowledge of Bengaluru's worst
 bottlenecks — Silk Board, Whitefield, Hebbal, Electronic City — and gives a synthesized,
-decisive recommendation instead of raw numbers, visualized on an interactive map.
+decisive recommendation instead of raw numbers, visualized on an interactive map with
+color-coded congestion segments.
 
 ## Architecture
 commute_agent (orchestrator)
@@ -25,14 +27,15 @@ commute_agent (orchestrator)
 
 The orchestrator delegates to `route_agent` for factual data gathering, then to `advisor_agent`
 for synthesis and decision-making. Each agent has a single, clear responsibility — one gathers,
-one decides.
+one decides. Gemini decides which tools to call and which agent to delegate to at inference
+time, based on the query — not a fixed execution order.
 
 ## Tech Stack
 
 **Agent**
 - Google Agent Development Kit (ADK)
 - Gemini 2.5 Flash-Lite
-- OpenRouteService API (live routing, decoded polyline geometry)
+- OpenRouteService via HeiGIT (`api.heigit.org`) — live routing, decoded polyline geometry
 
 **Full Stack**
 - FastAPI (backend, wraps the ADK agent as a REST endpoint, with retry logic for transient Gemini errors)
@@ -90,6 +93,10 @@ npm run dev
 Visit `http://localhost:5173`. Set `VITE_API_URL` in `frontend/.env` if pointing to a
 non-default backend URL.
 
+> **Note:** OpenRouteService migrated its API base URL from `api.openrouteservice.org` to
+> `api.heigit.org` in April 2026. This project uses the current endpoint. If you fork this
+> and hit a "disallowed" error from ORS, confirm you're using `api.heigit.org`.
+
 ## Example Queries
 
 - "What's the traffic like from Silk Board to ORR at 8:45 AM?"
@@ -107,6 +114,8 @@ non-default backend URL.
   under high demand; retry logic is implemented to handle this gracefully.
 - Free-tier Render hosting spins down after inactivity — first request after idle may take
   30-50 seconds to respond.
+- Place-name-to-coordinate resolution for locations outside the 4 known corridors relies on
+  the model's own geocoding; uncommon or ambiguous place names may occasionally fail to resolve.
 
 ## Author
 
